@@ -1,83 +1,85 @@
 package org.sam;
 
-import java.awt.Window;
 import java.time.Duration;
-import java.util.List;
-
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import junit.framework.Assert;
 
 
 public class Automation {
 	
-public static FirefoxDriver driver;
+public static EdgeDriver driver;
 	
 	public static void main(String[] args) throws InterruptedException {
 		
 
 
-		 driver=new FirefoxDriver();
-	driver.get("https://www.douglas.de/de");
-
-	driver.manage().window().maximize();
+		 driver=new EdgeDriver();
 	
-	  driver.navigate().refresh();
+	        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-	  
-	  Thread.sleep(2000);
+	        
+	            driver.get("https://www.douglas.de/de");
+	            
 
+	  		  driver.manage().window().maximize(); 
+	  		  
+	  		  
+	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+	            WebElement shadowHost = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div[id^='usercentrics-root']")));
 
-//	  WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//
-//		  JavascriptExecutor js = (JavascriptExecutor) driver;
-//		  
-//		  WebElement cookieButton = (WebElement) js.executeScript(
-//		      "return document.querySelector('#usercentrics-root').shadowRoot.querySelector('button[data-testid=\"uc-privacy-button\"]');"
-//		  );
-//		  cookieButton.click();
+	            SearchContext shadowRoot = shadowHost.getShadowRoot();
+
+	            WebElement acceptAllButton = shadowRoot.findElement(By.cssSelector("button[data-testid='uc-accept-all-button']"));
+
+	            acceptAllButton.click();
+	        
+
+	            String actualUrl = driver.getCurrentUrl();
+	            Assert.assertTrue("The URL does not contain 'douglas'", actualUrl.contains("douglas"));
+
+			            
+	            
+	            WebElement parfum = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='PARFUM']")));
+	            parfum.click();
 	
-		WebElement parfum = driver.findElement(By.xpath("(//a[@href='/de/c/parfum/01'])[1]"));
-		parfum.click();
-		
-		Thread.sleep(10000);
-		
-		WebElement marke= driver.findElement(By.xpath("//div[text()='Marke']"));
-		marke.click();
-		WebElement markefirstoption= driver.findElement(By.xpath("(//input[@class='L0cGE_g_MG_wpv4Hq1Rn'])[1]"));
-		markefirstoption.click();
-		 
-		 Thread.sleep(3000);
-	
-	
+		          System.out.println("✅ Navigated to PARFUM");
 
-		WebElement productkart= driver.findElement(By.xpath("//div[text()='Produktart']"));
-		productkart.click();
-		WebElement pkfirstoption= driver.findElement(By.xpath("//input[@class='L0cGE_g_MG_wpv4Hq1Rn']"));
-		pkfirstoption.click();
-		
-		 Thread.sleep(3000);
-			
-			
-           WebElement Geschenk= driver.findElement(By.xpath("//div[text()='Geschenk für']"));
-			Geschenk.click();
+
+			   WebElement marke = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Marke']")));
+			   marke.click();
+
+			   WebElement markefirstoption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='-417']")));
+			   markefirstoption.click();
+	           System.out.println("✅ Filtered first option in Marke");
+	
+	 	
+	          WebElement productkart= driver.findElement(By.xpath("//div[text()='Produktart']"));
+		      productkart.click();
+		      WebElement pkfirstoption= driver.findElement(By.xpath("//input[@class='L0cGE_g_MG_wpv4Hq1Rn']"));
+	          pkfirstoption.click();
+	          System.out.println("✅ Filtered first option in Productkart");
+
+	
+	         WebElement Geschenk = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Geschenk für']")));
+	         Geschenk.click();
 			WebElement Geschenkoption= driver.findElement(By.xpath("//input[@class='L0cGE_g_MG_wpv4Hq1Rn']"));
 			Geschenkoption.click();
+			System.out.println("✅ Filtered first option in Geschenko");
+				
 			
-			 Thread.sleep(3000);
-				
-				
-	          WebElement furwen= driver.findElement(By.xpath("//div[text()='Für Wen']"));
-			furwen.click();
+            WebElement furwen = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Für Wen']")));
+            furwen.click();
 			WebElement furwenoption= driver.findElement(By.xpath("//input[@class='L0cGE_g_MG_wpv4Hq1Rn']"));
 			furwenoption.click();
 		 
-	}
-    }
-
+            WebElement Product= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@data-testid='image-link']")));
+            Product.click();
+            System.out.println("✅ Product selected and ready to buy now");
+			
+	}}
